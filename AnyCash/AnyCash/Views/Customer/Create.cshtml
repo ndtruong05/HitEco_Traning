@@ -1,0 +1,204 @@
+﻿@model CORE.Tables.CASH_CUSTOMERS
+@{
+    ViewBag.Title = "Thông tin khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header page-header-default">
+    <div class="page-header-content" style="background-color: #fcfcfc;">
+        <div class="page-title" style="padding: 20px 0;">
+            <h4>
+                <a href="javascript:void(0);" onclick="history.go(-1);"><i class="icon-arrow-left52 position-left"></i></a>
+                @if (Model.CUSTOMER_ID == 0)
+                {
+                    <span class="text-semibold">Thêm mới khách hàng</span>
+                }
+                else
+                {
+                    <span class="text-semibold">Cập nhật khách hàng</span>
+                }
+            </h4>
+        </div>
+    </div>
+</div>
+<div class="div-h100 div-top69">
+    <div class="panel-body div-h100-body">
+        <div class="div-h100 div-bottom56">
+            <div class="div-h100-body">
+                <div class="well form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Cửa hàng *</label>
+                        <div class="col-sm-9">
+                            <select class="select form-control select-search select2-hidden-accessible w-100" id="CUSTOMER_SHOPID" tabindex="-1" aria-hidden="true">
+                                @for (int i = 0; i < ViewBag.ShopList.Count; i++)
+                                {
+                                    <option value=@ViewBag.ShopList[i].SHOP_ID @(ViewBag.ShopList[i].SHOP_ID == Model.CUSTOMER_SHOPID ? "checked" : "")>@ViewBag.ShopList[i].SHOP_NAME</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Tên khách hàng *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="CUSTOMER_NAME" value="@Model.CUSTOMER_NAME" class="form-control" placeholder="Nhập tên khách hàng">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Số điện thoại *</label>
+                        <div class="col-sm-9">
+                            <input type="tel" id="CUSTOMER_PHONE" value="@Model.CUSTOMER_PHONE" class="form-control" maxlength="13" placeholder="Nhập số điện thoại khách hàng">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Số CMND *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="CUSTOMER_IDENTITY" value="@Model.CUSTOMER_IDENTITY" class="form-control" placeholder="Nhập số giấy tờ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Ngày cấp *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="CUSTOMER_DATE" value="@(Model.CUSTOMER_DATE == null ? "" : DateTime.ParseExact(Model.CUSTOMER_DATE, "yyyyMMdd", null).ToString("dd/MM/yyyy"))" class="form-control pickadate" placeholder="Ngày cấp">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Nơi cấp *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="CUSTOMER_PLACE" value="@Model.CUSTOMER_PLACE" class="form-control" placeholder="Nhập nơi cấp">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Địa chỉ *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="CUSTOMER_ADDRESS" value="@Model.CUSTOMER_ADDRESS" class="form-control" placeholder="Nhập địa chỉ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Trạng thái *</label>
+                        <div class="checkbox checkbox-switchery col-sm-9">
+                            <label>
+                                <input type="checkbox" class="switchery" id="CUSTOMER_ACTIVE" @(Model.CUSTOMER_ACTIVE ? "checked" : "")>
+                                <span>Hoạt động/Đã khóa</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="div-p-20-0">
+            @if (Model.CUSTOMER_ID == 0)
+            {
+                <button type="button" id="" class="btn btn-primary btnCreate">Tạo mới</button>
+            }
+            else
+            {
+                <button type="button" id="" class="btn btn-primary btnUpdate">Cập nhật</button>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function validate() {
+        if ($("#CUSTOMER_SHOPID").val() == '' || $("#CUSTOMER_SHOPID").val() == null) {
+            alert('Chưa chọn cửa hàng');
+            $("#CUSTOMER_SHOPID").focus();
+            return false;
+        }
+        if ($("#CUSTOMER_NAME").val() == '') {
+            alert('Tên khách hàng không được để trống');
+            $("#CUSTOMER_NAME").focus();
+            return false;
+        }
+        if ($("#CUSTOMER_PHONE").val() == '' || isNaN($("#CUSTOMER_PHONE").val())) {
+            alert('Bạn phải nhập số điện thoại và không được để trống');
+            $("#CUSTOMER_PHONE").focus();
+            return false;
+        }
+        if ($("#CUSTOMER_IDENTITY").val() == '' || isNaN($("#CUSTOMER_IDENTITY").val())) {
+            alert('Bạn phải nhập số CMND và không được để trống');
+            $("#CUSTOMER_IDENTITY").focus();
+            return false;
+        }
+        if ($("#CUSTOMER_DATE").val() == '') {
+            alert('Ngày cấp không được để trống');
+            $("#CUSTOMER_DATE").focus();
+            return false;
+        }
+        if ($("#CUSTOMER_PLACE").val() == '') {
+            alert('Nơi cấp không được để trống');
+            $("#CUSTOMER_PLACE").focus();
+            return false;
+        }
+        if ($("#CUSTOMER_ADDRESS").val() == '') {
+            alert('Địa chỉ không được để trống');
+            $("#CUSTOMER_ADDRESS").focus();
+            return false;
+        }
+        return true;
+    }
+    function getParams() {
+        let params = {
+            CUSTOMER_ID: '@Model.CUSTOMER_ID',
+            CUSTOMER_SHOPID: $("#CUSTOMER_SHOPID").val(),
+            CUSTOMER_NAME: $("#CUSTOMER_NAME").val(),
+            CUSTOMER_PHONE: $("#CUSTOMER_PHONE").val(),
+            CUSTOMER_IDENTITY: $("#CUSTOMER_IDENTITY").val(),
+            CUSTOMER_DATE: getDate($("#CUSTOMER_DATE").val()),
+            CUSTOMER_PLACE: $("#CUSTOMER_PLACE").val(),
+            CUSTOMER_ADDRESS: $("#CUSTOMER_ADDRESS").val(),
+            CUSTOMER_ACTIVE: $("#CUSTOMER_ACTIVE").prop("checked")
+        }
+        return params;
+    }
+    function getDate(d) {
+        var arr = d.split('/');
+        if (arr.length != 3)
+            return '';
+        return arr[2] + arr[1] + arr[0];
+    }
+    $(".btnCreate").click(function () {
+        if (validate()) {
+            $.ajax({
+                url: '/Ajax/CustomerInsert',
+                type: "post",
+                data: getParams(),
+                success: function (data) {
+                    if (data.Code == 0) {
+                        toastr.success(data.Result);
+                        window.location = "/Customer";
+                    } else {
+                        toastr.error(data.Result);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            }).done(function (result) {
+
+            });
+        }
+    });
+    $(".btnUpdate").click(function () {
+        if (validate()) {
+            $.ajax({
+                url: '/Ajax/CustomerUpdate',
+                type: "post",
+                data: getParams(),
+                success: function (data) {
+                    if (data.Code == 0) {
+                        toastr.success(data.Result);
+                        window.location = "/Customer";
+                    } else {
+                        toastr.error(data.Result);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            }).done(function (result) {
+
+            });
+        }
+    });
+</script>

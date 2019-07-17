@@ -1,0 +1,12 @@
+D:\Personal Folder\ETAS\AnyCash\Source_NEW\CORE\bin\Debug\CORE.dll
+D:\Personal Folder\ETAS\AnyCash\Source_NEW\CORE\bin\Debug\CORE.pdb
+D:\Personal Folder\ETAS\AnyCash\Source_NEW\CORE\obj\Debug\CORE.csproj.CoreCompileInputs.cache
+D:\Personal Folder\ETAS\AnyCash\Source_NEW\CORE\obj\Debug\CORE.dll
+D:\Personal Folder\ETAS\AnyCash\Source_NEW\CORE\obj\Debug\CORE.pdb
+D:\Personal Folder\ETAS\AnyCash\Source_NEW\CORE\obj\Debug\CORE.csprojAssemblyReference.cache
+D:\Personal Folder\HITECO\AnyCash\Source_NEW\CORE\bin\Debug\CORE.dll
+D:\Personal Folder\HITECO\AnyCash\Source_NEW\CORE\bin\Debug\CORE.pdb
+D:\Personal Folder\HITECO\AnyCash\Source_NEW\CORE\obj\Debug\CORE.csprojAssemblyReference.cache
+D:\Personal Folder\HITECO\AnyCash\Source_NEW\CORE\obj\Debug\CORE.csproj.CoreCompileInputs.cache
+D:\Personal Folder\HITECO\AnyCash\Source_NEW\CORE\obj\Debug\CORE.dll
+D:\Personal Folder\HITECO\AnyCash\Source_NEW\CORE\obj\Debug\CORE.pdb

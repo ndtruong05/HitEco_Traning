@@ -1,0 +1,204 @@
+﻿@using CORE.Helpers
+@model CORE.Tables.CASH_INSTALLMENTS
+@{
+    ViewBag.Title = "Quản lý vay họ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header page-header-default">
+    <div class="page-header-content" style="background-color: #fcfcfc;">
+        <div class="page-title" style="padding: 20px 0;">
+            <h4>
+                <a href="javascript:void(0);" onclick="history.go(-1);"><i class="icon-arrow-left52 position-left"></i></a>
+                @if (Model.INSTALLMENT_ID == 0)
+                {
+                    <span class="text-semibold">Thêm mới Hợp đồng vay họ</span>
+                }
+                else
+                {
+                    <span class="text-semibold">Cập nhật Hợp đồng vay họ</span>
+                }
+            </h4>
+        </div>
+    </div>
+</div>
+<div class="div-h100 div-top69">
+    <div class="panel-body div-h100-body">
+        <div class="div-h100 div-bottom56">
+            <div class="div-h100-body">
+                <div class="well form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Khách hàng *</label>
+                        <div class="col-sm-9">
+                            <select class="select form-control select-search select2-hidden-accessible w-100" id="INSTALLMENT_CUSTOMERID" tabindex="-1" aria-hidden="true">
+                                @for (int i = 0; i < ViewBag.CustomerList.Count; i++)
+                                {
+                                    <option value=@ViewBag.CustomerList[i].CUSTOMER_ID data-toggle="tooltip" title="@ViewBag.CustomerList[i].CUSTOMER_ID" @(Model.INSTALLMENT_CUSTOMERID != 0 && ViewBag.CustomerList[i].CUSTOMER_ID == Model.INSTALLMENT_CUSTOMERID ? "checked" : "")>
+                                        @ViewBag.CustomerList[i].CUSTOMER_NAME
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Bát họ *</label>
+                        <div class="col-sm-9">
+                            <input type="tel" id="INSTALLMENT_TOTAL_MONEY" value="@(Model.INSTALLMENT_TOTAL_MONEY.Currency_ToView())" class="form-control currency" maxlength="11" placeholder="(Tổng tiền khách phải đóng)" @(Model.INSTALLMENT_ID == 0 ? "" : "disabled")>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Tiền đưa khách *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="INSTALLMENT_MONEY_RECEIVED" value="@(Model.INSTALLMENT_MONEY_RECEIVED.Currency_ToView())" class="form-control currency" maxlength="11" placeholder="(Tổng tiền khách nhận được)" @(Model.INSTALLMENT_ID == 0 ? "" : "disabled")>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Bốc trong vòng *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="INSTALLMENT_TIME" value="@(Model.INSTALLMENT_TIME.Int_ToView())" class="form-control" placeholder="(Tổng số ngày khách phải đóng)" @(Model.INSTALLMENT_ID == 0 ? "" : "disabled")>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Số ngày đóng tiền *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="INSTALLMENT_FREQUENCY" value="@(Model.INSTALLMENT_FREQUENCY.Int_ToView())" class="form-control" placeholder="(VD : 3 ngày đóng 1 lần thì điền số 3 )">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Ngày bốc *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="INSTALLMENT_FROM_DATE" value="@(Model.INSTALLMENT_FROM_DATE.Date_yyyyMMdd_ToView(true))" class="form-control pickadate" placeholder="Ngày bốc" @(Model.INSTALLMENT_ID == 0 ? "" : "disabled")>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Ghi chú</label>
+                        <div class="col-sm-9">
+                            <textarea id="INSTALLMENT_NOTE" style="width:100%;resize:vertical;">@(Model.INSTALLMENT_NOTE)</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">NV thu tiền</label>
+                        <div class="col-sm-9">
+                            <select class="select form-control select-search select2-hidden-accessible w-100" id="INSTALLMENT_USERID" tabindex="-1" aria-hidden="true">
+                                @for (int i = 0; i < ViewBag.StaffList.Count; i++)
+                                {
+                                    <option value=@ViewBag.StaffList[i].USER_ID @(Model.INSTALLMENT_USERID != 0 && ViewBag.StaffList[i].USER_ID == Model.INSTALLMENT_USERID ? "checked" : "")>@ViewBag.StaffList[i].USER_LOGIN</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="div-p-20-0">
+            @if (Model.INSTALLMENT_ID == 0)
+            {
+                <button type="button" id="" class="btn btn-primary btnCreate">Tạo mới</button>
+            }
+            else
+            {
+                <button type="button" id="" class="btn btn-primary btnUpdate">Cập nhật</button>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function validate() {
+        if ($("#INSTALLMENT_CUSTOMERID").val() == '' || $("#INSTALLMENT_CUSTOMERID").val() == null) {
+            alert('Chưa chọn khách hàng');
+            $("#INSTALLMENT_CUSTOMERID").focus();
+            return false;
+        }
+        if ($("#INSTALLMENT_TOTAL_MONEY").val() == '') {
+            alert('Bát họ không được để trống');
+            $("#INSTALLMENT_TOTAL_MONEY").focus();
+            return false;
+        }
+        if ($("#INSTALLMENT_MONEY_RECEIVED").val() == '') {
+            alert('Tiền đưa khách không được để trống');
+            $("#INSTALLMENT_MONEY_RECEIVED").focus();
+            return false;
+        }
+        if ($("#INSTALLMENT_TIME").val() == '') {
+            alert('Tổng số ngày đóng tiền không được để trống');
+            $("#INSTALLMENT_TIME").focus();
+            return false;
+        }
+        if ($("#INSTALLMENT_FREQUENCY").val() == '') {
+            alert('Chu kỳ đóng tiền không được để trống');
+            $("#INSTALLMENT_FREQUENCY").focus();
+            return false;
+        }
+        if ($("#INSTALLMENT_FROM_DATE").val() == '') {
+            alert('Ngày bốc không được để trống');
+            $("#INSTALLMENT_FROM_DATE").focus();
+            return false;
+        }
+        return true;
+    }
+    function getParams() {
+        let params = {
+            INSTALLMENT_ID: '@Model.INSTALLMENT_ID',
+            INSTALLMENT_CUSTOMERID: $("#INSTALLMENT_CUSTOMERID").val(),
+            INSTALLMENT_TOTAL_MONEY: $("#INSTALLMENT_TOTAL_MONEY").val().replace(/[^0-9]+/g, ''),
+            INSTALLMENT_MONEY_RECEIVED: $("#INSTALLMENT_MONEY_RECEIVED").val().replace(/[^0-9]+/g, ''),
+            INSTALLMENT_TIME: $("#INSTALLMENT_TIME").val(),
+            INSTALLMENT_FREQUENCY: $("#INSTALLMENT_FREQUENCY").val(),
+            INSTALLMENT_FROM_DATE: getDate($("#INSTALLMENT_FROM_DATE").val()),
+            INSTALLMENT_NOTE: $("#INSTALLMENT_NOTE").val(),
+            INSTALLMENT_USERID: $("#INSTALLMENT_USERID").val()
+        }
+        return params;
+    }
+    function getDate(d) {
+        var arr = d.split('/');
+        if (arr.length != 3)
+            return '';
+        return arr[2] + arr[1] + arr[0];
+    }
+    $(".btnCreate").click(function () {
+        if (validate()) {
+            $.ajax({
+                url: '/Ajax/InstallmentInsert',
+                type: "post",
+                data: getParams(),
+                success: function (data) {
+                    if (data.Code == 0) {
+                        toastr.success(data.Result);
+                        window.location = "/Installment";
+                    } else {
+                        toastr.error(data.Result);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            }).done(function (result) {
+
+            });
+        }
+    });
+    $(".btnUpdate").click(function () {
+        if (validate()) {
+            $.ajax({
+                url: '/Ajax/InstallmentUpdate',
+                type: "post",
+                data: getParams(),
+                success: function (data) {
+                    if (data.Code == 0) {
+                        toastr.success(data.Result);
+                        window.location = "/Installment";
+                    } else {
+                        toastr.error(data.Result);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            }).done(function (result) {
+
+            });
+        }
+    });
+</script>

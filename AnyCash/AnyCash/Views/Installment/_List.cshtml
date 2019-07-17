@@ -1,0 +1,202 @@
+﻿@model List<CORE.Views.INSTALLMENT_INFOR>
+@{
+    int startPage = (ViewBag.pageNumber - 1) * ViewBag.pageSize + 1;
+    int? totalPage = (int?)ViewBag.maxNumber;
+}
+@helper ParseDate(string date)
+{
+    @(date.Substring(6, 2) + "/" + date.Substring(4, 2) + "/" + date.Substring(0, 4))
+}
+@helper ParseState(int stt, string ngayDong)
+{
+switch (stt)
+{
+    case 0:
+            if (DateTime.Now.ToString("yyyyMMdd").CompareTo(ngayDong) <= 0)
+            {
+                <span style="background-color:#34bfa3;color:#ffffff;padding:4px 6px;border-radius:10px;white-space:nowrap;">Đang vay</span>
+            }
+            else
+            {
+                <span style="background-color:#ff0000;color:#ffffff;padding:4px 6px;border-radius:10px;white-space:nowrap;">Chậm họ</span>
+        }
+        break;
+    case 1:
+            <span style="background-color:#ff0000;color:#000000;padding:4px 6px;border-radius:10px;white-space:nowrap;">Đã đóng</span>
+        break;
+    default: <span></span>; break;
+}
+}
+
+<div class="div-h100 @if (totalPage.HasValue && totalPage.Value > 1) { <text>div-bottom56</text> }">
+    <div class="div-h100-body">
+        <div class="well">
+            <table class="table" style="display:block;overflow-x:auto;">
+                <thead>
+                    <tr>
+                        <th class="fixed-col">STT</th>
+                        <th>Mã HĐ</th>
+                        <th>Khách hàng</th>
+                        <th>Tiền giao khách</th>
+                        <th>Tỷ lệ</th>
+                        <th>Thời gian</th>
+                        <th>Tiền đã đóng</th>
+                        <th>Nợ cũ</th>
+                        <th>Tiền 1 ngày</th>
+                        <th>Còn phải đóng</th>
+                        <th>Tình trạng</th>
+                        <th>Ngày phải đóng</th>
+                        <th class="text-center" style="min-width: 120px;">Chức năng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr class="text-center">
+                            <td class="fixed-col">@(startPage + i)</td>
+                            <td>
+                                <a href=@Url.Action("Create", new { id = @Model[i].INSTALLMENT_ID }) data-toggle="tooltip" title="Sửa thông tin hợp đồng">
+                                    @Model[i].INSTALLMENT_ID
+                                </a>
+                            </td>
+                            <td data-toggle="tooltip" title="@Model[i].INSTALLMENT_CUSTOMERID">@Model[i].INSTALLMENT_CUSTOMER_NAME</td>
+                            <td>@string.Format("{0:N0}", Model[i].INSTALLMENT_MONEY_RECEIVED)</td>
+                            <td>10 ăn @Math.Round(Model[i].INSTALLMENT_MONEY_RECEIVED * 10 / Model[i].INSTALLMENT_TOTAL_MONEY, 1)</td>
+                            <td>
+                                @DateTime.ParseExact(Model[i].INSTALLMENT_FROM_DATE, "yyyyMMdd", null).ToString("dd/MM/yyyy") - @(DateTime.ParseExact(Model[i].INSTALLMENT_FROM_DATE, "yyyyMMdd", null).AddDays(Model[i].INSTALLMENT_TIME - 1).ToString("dd/MM/yyyy"))
+                                (@Model[i].INSTALLMENT_TIME ngày)
+                            </td>
+                            <td>@string.Format("{0:N0}", Model[i].TIEN_DA_DONG)</td>
+                            <td>@string.Format("{0:N0}", Model[i].NO_CU)</td>
+                            <td>@string.Format("{0:N0}", Model[i].INSTALLMENT_PAY_NEED)</td>
+                            <td>@string.Format("{0:N0}", Model[i].CON_PHAI_DONG)</td>
+                            <td>@ParseState(Model[i].INSTALLMENT_STATE, Model[i].NGAY_PHAI_DONG)</td>
+                            <td>@(Model[i].NGAY_PHAI_DONG == null ? "" : DateTime.ParseExact(Model[i].NGAY_PHAI_DONG, "yyyyMMdd", null).ToString("dd/MM/yyyy"))</td>
+                            <td class="text-center">
+                                <ul class="icons-list">
+                                    @*<li>
+                                        <a onclick="detailPawn('@Model[i].INSTALLMENT_ID')" class="btn btn-default btn-sm text-primary-600" data-toggle="tooltip" title="Sửa hợp đồng">
+                                            <i class="icon-pencil7"></i>
+                                        </a>
+                                    </li>*@
+                                    <li>
+                                        <a onclick="detailPawn('@Model[i].INSTALLMENT_ID')" class="btn btn-default btn-sm text-primary-600" data-toggle="tooltip" title="Đóng tiền">
+                                            <i class="icon-gift"></i>
+                                        </a>
+                                    </li>
+                                    @if (Model[i].INSTALLMENT_STATE == 0)
+                                    {
+                                        <li>
+                                            <a onclick="closeDetail('@Model[i].INSTALLMENT_ID', 0)" class="btn btn-default btn-sm text-primary-600" data-toggle="tooltip" title="Đóng hợp đồng">
+                                                <i class="icon-close2"></i>
+                                            </a>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a onclick="closeDetail('@Model[i].INSTALLMENT_ID', 1)" class="btn btn-default btn-sm text-primary-600" data-toggle="tooltip" title="Mở lại hợp đồng">
+                                                <i class="icon-unlocked2"></i>
+                                            </a>
+                                        </li>
+                                    }
+                                    <li>
+                                        <a onclick="deleteInstallment('@Model[i].INSTALLMENT_ID')" class="btn btn-default btn-sm text-primary-600" data-toggle="tooltip" title="Xóa hợp đồng">
+                                            <i class="icon-trash"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="">
+    @{ Html.RenderAction("_Pagination", "Home", new { maxNumber = ViewBag.maxNumber, pageNumber = ViewBag.pageNumber });}
+</div>
+
+<script>
+    function closeDetail(id, stt) {
+        if (stt == 0)
+            var conf = "Bạn chắc chắn đóng hợp đồng này?";
+        else
+            var conf = "Bạn chắc chắn mở lại hợp đồng này?";
+
+        if (confirm(conf)) {
+            $.ajax({
+                url: '/Ajax/InstallmentClose',
+                type: "post",
+                data: { installmentId: id, stt: stt },
+                success: function (data) {
+                    if (data.Code == 0) {
+                        location.reload();
+                    } else {
+                        toastr.error(data.Result);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            }).done(function (result) {
+
+            });
+        }
+    }
+    function detailPawn(id) {
+        var link = '@Url.Action("_LichDongTien", "Installment")';
+        var data = { id: id }
+        $('#modal_default').on('hidden.bs.modal', function () {
+            $('#modal_default').unbind();
+            //location.reload();
+            $('.btnSearch').click();
+        });
+        $('#modal_default').modal({
+            //backdrop: 'static',
+            //keyboard: false,
+            show: true
+        });
+        $("#modal_content").load(link, data);
+    }
+    function deleteInstallment(id) {
+        if (confirm('Bạn chắc chắn xóa hợp đồng này?')) {
+            $.ajax({
+                url: '/Ajax/InstallmentDelete',
+                type: "post",
+                data: { installmentId: id },
+                success: function (data) {
+                    if (data.Code == 0) {
+                        location.reload();
+                    } else {
+                        toastr.error(data.Result);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            }).done(function (result) {
+
+            });
+        }
+    }
+    let url_get = "/Installment/_List";
+    let getParamsForSearch = (pageNumber, isNext) => {
+        return {
+            "keyText": $(".txtSearch").val(),
+            "fromDate": getDate($("#fromDate").val()),
+            "toDate": getDate($("#toDate").val()),
+            "type": $(".optStt").val(),
+            "pageNumber": pageNumber + isNext,
+            "pageSize": $(".select2-selection--single").val(),
+        };
+    }
+    function getDate(d) {
+        var arr = d.split('/');
+        if (arr.length != 3)
+            return '';
+        return arr[2] + arr[1] + arr[0];
+    }
+    var features = new Features(url_get, null, getParamsForSearch);
+</script>

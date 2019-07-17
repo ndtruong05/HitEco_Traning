@@ -1,0 +1,167 @@
+﻿@using System.Collections.Generic
+@using AnyCash.Models
+@model List<Customer_DSKH>
+
+<link rel="stylesheet" href="https://maxcdn.icons8.com/fonts/line-awesome/1.1/css/line-awesome-font-awesome.min.css">
+
+<style>
+    /* css table customer */
+    thead.m-datatable__head {
+        background-color: #f4f3f7;
+    }
+
+    th.m-datatable__cell.m-datatable__cell--sort, .table tbody.m-datatable__body tr td {
+        border: none;
+    }
+
+    th.m-datatable__cell.m-datatable__cell--sort {
+        min-width: 120px;
+    }
+
+    th.m-datatable__cell--center.m-datatable__cell.m-datatable__cell--sort {
+        min-width: 30px;
+    }
+
+    tbody.m-datatable__body {
+        font-size: 13px;
+    }
+
+    .footerTblCustomer {
+        margin: 5px 5px;
+        text-align: right;
+        margin-right: 22px;
+    }
+
+    button.btn.dropdown-toggle.btn-default {
+        border-radius: 50px;
+        background-color: slateblue;
+        height: 30px;
+        width: 65px;
+        padding-bottom: 26px;
+    }
+
+    .filter-option-inner-inner {
+        display: -webkit-inline-box;
+    }
+
+    .bootstrap-select .dropdown-toggle .caret {
+        top: 32%;
+    }
+    /* css button edit va update */
+    button.btnCreateCustomer, button.btnFileUpdoadCustomer {
+        width: 30px;
+        height: 30px;
+        border-radius: 50px;
+        background-color: #8a2be2b8;
+        border: none;
+    }
+
+    span.iconCustomer.iconFileUploadCustomer.badge.badge-light, span.iconCustomer.iconCreateCustomer.badge.badge-light {
+        margin-left: -2px;
+    }
+    /* css span tinh trang */
+    p.btn-success {
+        border-radius: 10px;
+        text-align: center;
+        background-color: #34bfa3;
+        margin-bottom: 0px;
+    }
+
+    p.btn-warning {
+        border-radius: 10px;
+        text-align: center;
+        background-color: #f4516c;
+        margin-bottom: 0px;
+    }
+</style>
+
+<!-- begin: table customer -->
+<div class="divListCustomer" id="divListCustomerID">
+    <div class="m_datatable m-datatable m-datatable--default m-datatable--loaded" style="">
+        <table class="table tablecustomize" id="m-datatable--1374422833895" style="overflow-x: auto;">
+            <thead class="m-datatable__head">
+                <tr class="m-datatable__row" style="height: 37px;">
+                    <th data-field="RowID" class="m-datatable__cell--center m-datatable__cell m-datatable__cell--sort" style="text-align: center;"><span style="width: 40px;">#</span></th>
+                    <th data-field="Name" class="m-datatable__cell m-datatable__cell--sort" style="text-align: left;"><span style="width: 200px;">Khách hàng</span></th>
+                    <th data-field="Address" class="m-datatable__cell m-datatable__cell--sort" style="text-align: left;"><span style="width: 340px;">Địa chỉ</span></th>
+                    <th data-field="Phone" class="m-datatable__cell m-datatable__cell--sort" style="text-align: left;"><span style="width: 100px;">Điện thoại</span></th>
+                    <th data-field="NumberCard" class="m-datatable__cell m-datatable__cell--sort" style="text-align: left;"><span style="width: 120px;">CMND</span></th>
+                    <th data-field="ShopName" class="m-datatable__cell m-datatable__cell--sort" style="text-align: left;"><span style="width: 120px;">Cửa hàng</span></th>
+                    <th data-field="CreatedDate" class="m-datatable__cell--center m-datatable__cell m-datatable__cell--sort" style="text-align: center;"><span style="width: 80px;">Ngày tạo</span></th>
+                    <th data-field="Status" class="m-datatable__cell m-datatable__cell--sort" style="text-align: center;"><span style="width: 100px;">Tình trạng</span></th>
+                    <th data-field="Actions" class="m-datatable__cell m-datatable__cell--sort" style="text-align: left; min-width: 120px;"><span style="width: 80px;">Chức năng</span></th>
+                </tr>
+            </thead>
+            <tbody class="m-datatable__body" style="">
+                @{
+                    int i = 0;
+                }
+                @foreach (var obj in Model)
+                {
+                    i++;
+
+                    <tr>
+                        <td class="sttTblCustomer">@Html.DisplayName((i).ToString())</td>
+                        <td class="khTblCustomer" style="font-weight: bold; font-size: 14px">
+                            <a href="@Url.Action("Create", "Customer")">@Html.DisplayFor(modelItem => obj.KhachHang)</a>
+                        </td>
+                        <td class="dcTblCustomer">@Html.DisplayFor(modelItem => obj.DiaChi)</td>
+                        <td class="dtTblCustomer">@Html.DisplayFor(modelItem => obj.DienThoai)</td>
+                        <td class="cmndTblCustomer">@Html.DisplayFor(modelItem => obj.CMND)</td>
+                        <td class="chTblCustomer">@Html.DisplayFor(modelItem => obj.CuaHang)</td>
+                        <td class="ntTblCustomer">@Html.DisplayFor(modelItem => obj.NgayTao)</td>
+                        <td class="ttTblCustomer">
+                            @if (@Html.DisplayFor(modelItem => obj.TinhTrang).ToString().Equals("Hoạt động"))
+                            {
+                                <p class="btn-success">
+                                    @Html.DisplayFor(modelItem => obj.TinhTrang)
+                                    <span class="badge badge-light"></span>
+                                </p>
+                            }
+                            else
+                            {
+                                <p class="btn-warning">
+                                    @Html.DisplayFor(modelItem => obj.TinhTrang)
+                                    <span class="badge badge-light"></span>
+                                </p>
+                            }
+
+                        </td>
+                        <td class="cnTblCustomer">
+                            <button class="btnTblCustomer btnCreateCustomer" data-toggle="tooltip" data-placement="bottom" title="Cập nhật" onclick=Create()>
+                                <a href="@Url.Action("Create", "Customer")">
+                                    <span class="iconCustomer iconCreateCustomer badge badge-light">
+                                        <i class="fa fa-edit"></i>
+                                    </span>
+                                </a>
+                            </button>
+                            <button class="btnTblCustomer btnFileUpdoadCustomer" data-toggle="tooltip" data-placement="bottom" title="Upload Chứng từ" onclick=FileUpload()>
+                                <a href="@Url.Action("FileUpload", "Customer")">
+                                    <span class="iconCustomer iconFileUploadCustomer badge badge-light">
+                                        <i class="fa fa-file-image-o"></i>
+                                    </span>
+                                </a>
+
+                            </button>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+    <div class="footerTblCustomer">
+        <select class="selectpicker m-datatable__pager-size" title="Select page size" data-width="70px" data-selected="10" tabindex="-98">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+        <span class="m-datatable__pager-detail">Tống số 1 bản ghi</span>
+    </div>
+
+</div>
+
+<!-- end: table customer -->

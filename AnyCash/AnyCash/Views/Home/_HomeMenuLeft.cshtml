@@ -1,0 +1,72 @@
+﻿@using CORE.Tables
+@model List<SYS_ACTIONS>
+
+@helper GenMenu(List<SYS_ACTIONS> list, string parent)
+{
+foreach (var item in list)
+{
+    if (string.IsNullOrEmpty(parent) && item.ACTION_ISROOT || item.ACTION_PARENT_ID == parent)
+    {
+        string aHref = !item.ACTION_ISMODULE ? item.ACTION_CONTROLPATH : "";
+        string aClass = item.ACTION_ISMODULE && list.Any(x => x.ACTION_PARENT_ID == item.ACTION_ID) ? "has-ul" : "";
+        string spanStyle = item.ACTION_ISMODULE ? "text-transform: uppercase;" : "";
+
+            <li class="">
+                <a href="@aHref" class="@aClass">
+                    @if (!string.IsNullOrEmpty(item.ACTION_ICON_CLASS))
+                    {
+                        <text><i class="@item.ACTION_ICON_CLASS"></i></text>
+                    }
+                    <span style="@spanStyle">@item.ACTION_NAME</span>
+                </a>
+                @if (item.ACTION_ISMODULE)//list.Any(x => x.ACTION_PARENT_ID == item.ACTION_ID))
+                {
+                    <ul class="hidden-ul">
+                        @GenMenu(list, item.ACTION_ID)
+                    </ul>
+                }
+            </li>
+    }
+}
+}
+
+<div class="sidebar-content">
+    <!-- User menu -->
+    <div class="sidebar-user">
+        <div class="category-content">
+            <div class="media">
+                <a href="#" class="media-left">
+                    <img src="~/Assets/images/placeholder.jpg" class="img-circle img-sm" alt="" />
+                </a>
+                <div class="media-body">
+                    <span class="media-heading text-semibold">@ViewBag.fullName</span>
+                    <div class="text-size-mini text-muted">
+                        <i class="icon-pin text-size-small"></i> &nbsp;@ViewBag.boxName
+                    </div>
+                </div>
+                <div class="media-right media-middle">
+                    <ul class="icons-list">
+                        <li><a href="#"><i class="icon-cog3"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /User menu -->
+    <!-- Main navigation -->
+    <div class="sidebar-category sidebar-category-visible">
+        <div class="category-content no-padding">
+            <ul class="navigation navigation-main navigation-accordion">
+                @GenMenu(Model, null)
+            </ul>
+        </div>
+    </div>
+    <!-- /Main navigation -->
+    <!-- Footer -->
+    <div class="footer">
+        <div class="text-muted">
+            All Rights Reserved<br>by ANY - CASH 2019. &copy;
+        </div>
+    </div>
+    <!-- /Footer -->
+</div>

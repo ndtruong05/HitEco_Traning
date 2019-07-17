@@ -1,0 +1,121 @@
+﻿
+@using System.Collections.Generic
+@using AnyCash.Models
+@model List<Installment_DSHD>
+
+<style>
+    .table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        border: 1px solid #ddd;
+    }
+
+        .table th {
+            font-weight: bold;
+        }
+
+        .table td, th {
+            text-align: left;
+        }
+
+    .function-button {
+        width: 10px;
+        height: 30px;
+        margin: 2px;
+    }
+
+        .function-button:hover {
+            background-color: darkgray;
+        }
+
+        .function-button i {
+            font-size: 12px;
+            padding-left: -20px;
+            padding-top: -10px;
+            margin-left: -6px;
+            margin-top: -5px;
+        }
+</style>
+
+<div class="body-content table-responsive">
+    <table class="table">
+        <tr>
+            <th>#</th>
+            <th>Mã HĐ</th>
+            <th>Khách Hàng</th>
+            <th>Tiền Giao Khách</th>
+            <th>Tỷ Lệ</th>
+            <th>Thời Gian</th>
+            <th>Tiền Đã Đóng</th>
+            <th>Nợ Cũ</th>
+            <th>Tiền 1 Ngày</th>
+            <th>Còn Phải Đóng</th>
+            <th>Tình Trạng</th>
+            <th>Ngày Phải Đóng</th>
+            <th>Chức Năng</th>
+        </tr>
+        @for (var i = 0; i < Model.Count; i++)
+        {
+            var tempNum = i + 1;
+            <tr>
+                <td>@tempNum</td>
+                <td>@Model[i].MaHD</td>
+                <td>@Model[i].KhachHang</td>
+                <td>@string.Format("{0:N0}", Model[i].TienGiaoKhach)</td>
+                <td>@Model[i].Tile</td>
+                <td>
+                    @Model[i].NgayBoc <span class="glyphicon glyphicon-arrow-right"></span> @Model[i].NgayHet
+                    <br />
+                    <p>(@Model[i].ThoiGian ngày)</p>
+                </td>
+                <td>@string.Format("{0:N0}", Model[i].TienDaDong)</td>
+                <td>@string.Format("{0:N0}", Model[i].NoCu)</td>
+                <td>@string.Format("{0:N0}", Model[i].Tien1Ngay)</td>
+                <td>
+                    @string.Format("{0:N0}", Model[i].ConPhaiDong)
+                    <br />
+                    <p>(@Model[i].Ky kỳ)</p>
+                </td>
+                <td>@Model[i].TinhTrang</td>
+                <td>@Model[i].NgayPhaiDong</td>
+                <td style="width:100px;">
+                    <button class="btn btn-default function-button" onclick="moChiTietHopDong('@Model[i].MaHD', 'DongTien')" title="Đóng tiền" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-usd"></i></button>
+                    <button class="btn btn-default function-button" onclick="moChiTietHopDong('@Model[i].MaHD', 'DongHopDong')" title="Đóng hợp đồng" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-ok"></i></button>
+                    <br />
+                    <button class="btn btn-default function-button" title="Xóa hợp đồng"><i class="glyphicon glyphicon-remove"></i></button>
+                    <button class="btn btn-default function-button" onclick="moChiTietHopDong('@Model[i].MaHD', 'HenGio')" title="Hẹn giờ khoản vay" data-toggle="modal" data-target="#myModal"><i class="glyphicon glyphicon-hourglass"></i></button>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td></td>
+            <td></td>
+            <td><span style="color:red;font-weight:bold">Tổng Tiền</span></td>
+            <td><span style="color:red;font-weight:bold">@string.Format("{0:N0}", ViewBag.TongTien)</span></td>
+            <td></td>
+            <td></td>
+            <td><span style="color:red;font-weight:bold">@string.Format("{0:N0}", ViewBag.TongTienDaDong)</span></td>
+            <td><span style="color:red;font-weight:bold">@string.Format("{0:N0}", ViewBag.TongNoCu)</span></td>
+            <td><span style="color:red;font-weight:bold">@string.Format("{0:N0}", ViewBag.TongTien1Ngay)</span></td>
+            <td><span style="color:red;font-weight:bold">@string.Format("{0:N0}", ViewBag.TongTienConPhaiDong)</span></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-lg" style="width:90%">
+        <div id="FormChiTietHopDong"></div>
+    </div>
+</div>
+<script>
+    function moChiTietHopDong(MaHD = "", TenForm = "") {
+        var link = '@Url.Action("_ChiTietHopDong", "Installment")';
+        var data = { MaHD: MaHD, tenForm: TenForm }
+        $("#FormChiTietHopDong").load(link,data);
+    }
+</script>

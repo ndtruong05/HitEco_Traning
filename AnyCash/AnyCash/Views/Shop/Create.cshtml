@@ -1,0 +1,183 @@
+﻿@model CORE.Tables.CASH_SHOPS
+@{
+    ViewBag.Title = "Thông tin cửa hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header page-header-default">
+    <div class="page-header-content" style="background-color: #fcfcfc;">
+        <div class="page-title" style="padding: 20px 0;">
+            <h4>
+                <a href="javascript:void(0);" onclick="history.go(-1);"><i class="icon-arrow-left52 position-left"></i></a>
+                @if (Model.SHOP_ID == 0)
+                {
+                    <span class="text-semibold">Thêm mới cửa hàng</span>
+                }
+                else
+                {
+                    <span class="text-semibold">Cập nhật cửa hàng</span>
+                }
+            </h4>
+        </div>
+    </div>
+</div>
+<div class="div-h100 div-top69">
+    <div class="panel-body div-h100-body">
+        <div class="div-h100 div-bottom56">
+            <div class="div-h100-body">
+                <div class="well form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Tên cửa hàng *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="SHOP_NAME" value="@Model.SHOP_NAME" class="form-control" placeholder="Nhập tên cửa hàng">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Số điện thoại *</label>
+                        <div class="col-sm-9">
+                            <input type="tel" id="SHOP_PHONE" value="@Model.SHOP_PHONE" class="form-control" maxlength="13" placeholder="Nhập số điện thoại">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Tỉnh / Thành Phố *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="SHOP_CITY" value="@Model.SHOP_CITY" class="form-control" placeholder="Nhập Tỉnh / Thành phố">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Quận / Huyện *</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="SHOP_DISTRICT" value="@Model.SHOP_DISTRICT" class="form-control" placeholder="Nhập Quận / Huyện">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Địa chỉ</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="SHOP_ADDRESS" value="@Model.SHOP_ADDRESS" class="form-control" placeholder="Nhập địa chỉ cửa hàng">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Người đại diện</label>
+                        <div class="col-sm-9">
+                            <input type="text" id="SHOP_REPRESENT" value="@Model.SHOP_REPRESENT" class="form-control" placeholder="Người đại diện cửa hàng">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Số vốn đầu tư *</label>
+                        <div class="col-sm-9">
+                            <input type="tel" id="SHOP_MONEY" value="@(Model.SHOP_MONEY == 0 ? "" : string.Format("{0:N0}", Model.SHOP_MONEY))" class="form-control currency" maxlength="15" placeholder="Nhập số vốn đầu tư" @(Model.SHOP_ID == 0 ? "" : "disabled")>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-3">Trạng thái *</label>
+                        <div class="checkbox checkbox-switchery col-sm-9">
+                            <label>
+                                <input type="checkbox" class="switchery" id="SHOP_ACTIVE" @(Model.SHOP_ACTIVE ? "checked" : "")>
+                                <span>Hoạt động/Tạm dừng</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="div-p-20-0">
+            @if (Model.SHOP_ID == 0)
+            {
+                <button type="button" id="" class="btn btn-primary btnCreate">Tạo mới</button>
+            }
+            else
+            {
+                <button type="button" id="" class="btn btn-primary btnUpdate">Cập nhật</button>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function validate() {
+        if ($("#SHOP_NAME").val() == '') {
+            alert('Tên cửa hàng không được để trống');
+            $("#SHOP_NAME").focus();
+            return false;
+        }
+        if ($("#SHOP_PHONE").val() == '') {
+            alert('Số điện thoại không được để trống');
+            $("#SHOP_PHONE").focus();
+            return false;
+        }
+        if ($("#SHOP_CITY").val() == '') {
+            alert('Tỉnh / Thành phố không được để trống');
+            $("#SHOP_CITY").focus();
+            return false;
+        }
+        if ($("#SHOP_DISTRICT").val() == '') {
+            alert('Quận / Huyện phố không được để trống');
+            $("#SHOP_CITY").focus();
+            return false;
+        }
+        if ($("#SHOP_MONEY").val() == '') {
+            alert('Số vốn đầu tư không được để trống');
+            $("#SHOP_MONEY").focus();
+            return false;
+        }
+        return true;
+    }
+    function getParams() {
+        let params = {
+            SHOP_ID: '@Model.SHOP_ID',
+            SHOP_NAME: $("#SHOP_NAME").val(),
+            SHOP_PHONE: $("#SHOP_PHONE").val(),
+            SHOP_CITY: $("#SHOP_CITY").val(),
+            SHOP_DISTRICT: $("#SHOP_DISTRICT").val(),
+            SHOP_ADDRESS: $("#SHOP_ADDRESS").val(),
+            SHOP_REPRESENT: $("#SHOP_REPRESENT").val(),
+            SHOP_MONEY: $("#SHOP_MONEY").val().replace(/[^0-9]+/g, ''),
+            SHOP_ACTIVE: $("#SHOP_ACTIVE").prop("checked")
+        }
+        return params;
+    }
+    $(".btnCreate").click(function () {
+        if (validate()) {
+            $.ajax({
+                url: '/Ajax/ShopInsert',
+                type: "post",
+                data: getParams(),
+                success: function (data) {
+                    if (data.Code == 0) {
+                        toastr.success(data.Result);
+                        window.location = "/Shop";
+                    } else {
+                        toastr.error(data.Result);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            }).done(function (result) {
+
+            });
+        }
+    });
+    $(".btnUpdate").click(function () {
+        if (validate()) {
+            $.ajax({
+                url: '/Ajax/ShopUpdate',
+                type: "post",
+                data: getParams(),
+                success: function (data) {
+                    if (data.Code == 0) {
+                        toastr.success(data.Result);
+                        window.location = "/Shop";
+                    } else {
+                        toastr.error(data.Result);
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            }).done(function (result) {
+
+            });
+        }
+    });
+</script>

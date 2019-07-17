@@ -1,0 +1,150 @@
+﻿@using CORE.Helpers
+@model List<CORE.Tables.CASH_INSTALLMENT_HISTORIES>
+
+<style>
+    .picker__holder {
+        position: fixed;
+    }
+</style>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h5 class="modal-title">Lịch đóng tiền</h5>
+</div>
+<div class="modal-body">
+    <div class="panel panel-flat">
+        <div class="panel-body" style="max-height: @(Model)px;overflow-y: auto;">
+            <table class="table" style="display:block;overflow-x:auto;">
+                <thead>
+                    <tr>
+                        <th class="fixed-col">STT</th>
+                        <th>Từ ngày</th>
+                        <th>Đến ngày</th>
+                        <th>Tiền họ</th>
+                        <th>Ngày giao dịch</th>
+                        <th>Tiền khách trả</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        <tr class="text-center">
+                            <td class="fixed-col">@(1 + i)</td>
+                            <td>@DateTime.ParseExact(Model[i].INH_DATE_FROM, "yyyyMMdd", null).ToString("dd/MM/yyyy")</td>
+                            <td>@DateTime.ParseExact(Model[i].INH_DATE_TO, "yyyyMMdd", null).ToString("dd/MM/yyyy")</td>
+                            <td>@string.Format("{0:N0}", Model[i].INH_MONEY_NEED)</td>
+                            <td>
+                                <div class="form-group">
+                                    <div class="col-sm-12">
+                                        <input type="text" value="@(Model[i].INH_DATE.Date_yyyyMMdd_ToView(true))" class="form-control pickadate" style="border-radius:20px;text-align:center;" @(Model[i].INH_ACTION == 1 ? "disabled" : "") />
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" value="@(Model[i].INH_ACTION == 1 ? string.Format("{0:N0}", Model[i].INH_MONEY) : string.Format("{0:N0}", Model[i].INH_MONEY_NEED))" class="form-control currency" maxlength="15" style="border-radius:20px;text-align:right;" @(Model[i].INH_ACTION == 1 ? "disabled" : "") />
+                            </td>
+                            <td>
+                                <input type="checkbox" onclick="updateInstallmentDetail('@Model[i].INH_ID', this)" @(Model[i].INH_ACTION == 1 ? "checked" : "") />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateInstallmentDetail(id, e) {
+        var check = $(e).prop('checked');
+
+        var date = '';
+        date = $(e).parents('tr').find(".pickadate").val();
+        if (date == '') {
+            date = formatDate(new Date());
+            $(e).parents('tr').find(".pickadate").val(formatDate2(new Date()));
+        } else {
+            date = getDate(date);
+        }
+
+        var money = 0;
+        money = $(e).parents('tr').find(".currency").val().replace(/[^0-9]+/g, '');
+        if (money == '' || money == 0 || money == null) {
+            money = 0
+            $(e).parents('tr').find(".currency").val(0);
+        }
+
+        var data = { id: id, date: date, money: money, action: check };
+        console.log(data);
+
+        $.ajax({
+            url: '/Ajax/InstallmentDetailUpdate',
+            type: "post",
+            data: data,
+            success: function (data) {
+                if (data.Code == 0) {
+                    $(e).parents('tr').find("input").each(function () {
+                        if (this != e)
+                            $(this).prop('disabled', check);
+                    });
+                    toastr.success(data.Result);
+                } else {
+                    $(e).prop('checked', !check);
+                    toastr.error(data.Result);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+                $(e).prop('checked', !check);
+            }
+        }).done(function (result) {
+
+        });
+    }
+
+    function formatDate(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [year, month, day].join('');
+    }
+    function formatDate2(date) {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) month = '0' + month;
+        if (day.length < 2) day = '0' + day;
+
+        return [day, month, year].join('/');
+    }
+    function getDate(d) {
+        var arr = d.split('/');
+        if (arr.length != 3)
+            return '';
+        return arr[2] + arr[1] + arr[0];
+    }
+
+    $(document).ready(function () {
+        $('.pickadate').pickadate({
+            selectMonths: true,
+            selectYears: true,
+            format: "dd/mm/yyyy"
+        });
+
+        //Format currency
+        $(".currency").on('input', function () {
+            let money2 = $(this).val().replace(/[^0-9]+/g, '').toString();
+            if (isNaN(parseInt(money2)))
+                $(this).val('');
+            else
+                $(this).val(FormatCurency('' + parseInt(money2)));
+        });
+    });
+</script>

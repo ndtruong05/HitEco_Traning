@@ -1,0 +1,64 @@
+﻿@model List<CORE.Models.SHOP_INFOR>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="/"><img src="~/Assets/images/logo_light.png" /></a>
+        <ul class="nav navbar-nav visible-xs-block">
+            <li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-tree5"></i></a></li>
+            <li><a class="sidebar-mobile-main-toggle"><i class="icon-paragraph-justify3"></i></a></li>
+        </ul>
+    </div>
+    <div class="navbar-collapse collapse" id="navbar-mobile">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a class="sidebar-control sidebar-main-toggle hidden-xs"><i class="icon-paragraph-justify3"></i></a></li>
+            @if (ViewBag.shopCurrent != null)
+            {
+                <li class="dropdown language-switch">
+                    <a class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="icon-location4"></span>
+                        <span data-toggle="tooltip" title="Cửa hàng hiện tại">@ViewBag.shopCurrent.SHOP_NAME</span>
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu" data-toggle="tooltip" title="Chuyển cửa hàng">
+                        @for (int i = 0; i < Model.Count; i++)
+                        {
+                            <li><a class="deutsch" onclick="changeShop('@Model[i].SHOP_ID')">@Model[i].SHOP_NAME</a></li>
+                        }
+                    </ul>
+                </li>
+            }
+            <li class="dropdown dropdown-user">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <img src="~/Assets/images/placeholder.jpg" alt="">
+                    <span>@ViewBag.userName</span>
+                    <i class="caret"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="/Home/Logout"><i class="icon-switch2"></i>Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<script>
+    function changeShop(shopId) {
+        $.ajax({
+            url: '/Ajax/ShopChange',
+            type: "post",
+            data: { shopId: shopId },
+            success: function (data) {
+                if (data.Code == 0) {
+                    location.reload();
+                } else {
+                    toastr.error(data.Result);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        }).done(function (result) {
+
+        });
+    }
+</script>
